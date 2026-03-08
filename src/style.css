@@ -14,3 +14,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@theme {
+  --color-checkout-input-bg: #262626;
+  --color-checkout-input-placeholder: #999999;
+  --color-checkout-accent: #41C4C3; 
+  --color-checkout-gray: #B2B2B2;
+  --color-checkout-dark-gray: #333333;
+
+
+/* TODO: remove the code below */
+/* Figma
+100: 1A1A1A
+/* 900: E5E5E5 taiwind neutral 200 */
+
+
+}
