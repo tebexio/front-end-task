@@ -10,10 +10,13 @@
     "api": "node ./api/server.js"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.2.1",
     "@vue/tsconfig": "^0.7.0",
     "fastify": "^5.2.1",
+    "tailwindcss": "^4.2.1",
     "typescript": "^5.8.2",
     "vue": "^3.5.13",
+    "vue-router": "^5.0.3",
     "vue-tsc": "^2.2.8"
   },
   "devDependencies": {
