@@ -30,20 +30,6 @@ export const useBasket = () => {
     loading.value = false
   }
 
-  // const applyCoupon = async (code: string) => {
-  //   if (!basket.value) return
-
-  //   const res = await fetch(`/api/basket/${basket.value.id}/coupon`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({ code })
-  //   })
-
-  //   basket.value = await res.json()
-  // }
-
   const applyCoupon = async (code: string) => {
     if (!basket.value) return
 
@@ -64,10 +50,25 @@ export const useBasket = () => {
     basket.value = data
   }
 
+  const checkout = async (payload: any) => {
+    if (!basket.value) return
+
+    const res = await fetch(`/api/basket/${basket.value.id}/checkout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+
+    return await res.json()
+  }
+
   return {
     basket,
     loading,
     fetchBasket,
-    applyCoupon
+    applyCoupon,
+    checkout
   }
 }

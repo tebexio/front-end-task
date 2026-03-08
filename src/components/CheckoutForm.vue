@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { reactive } from "vue"
+import router from "../router"
+import { useBasket } from "../composables/useBasket"
+
+const { checkout } = useBasket()
 
 const form = reactive({
   email: "",
@@ -9,6 +13,36 @@ const form = reactive({
   postalCode: "",
   nameOnCard: ""
 })
+
+const submit = async () => {
+
+  const mockedPayload = {
+    cardCvc: "123",
+    cardExpiry: "01/24",
+    cardNumber: "1111222233334444",    
+    email: "john.doe@example.com",
+    nameOnCard: "John Doe",
+    postalCode: "SW1W 0NY"
+  };
+
+  // const payload = {
+  //   cardCvc: form.cardCvc,
+  //   cardExpiry: form.cardExpiry,
+  //   cardNumber: form.cardNumber,
+  //   email: form.email,
+  //   nameOnCard: form.nameOnCard,
+  //   postalCode: form.postalCode
+  // };
+
+  const res = await checkout(mockedPayload)
+  // const res = await checkout(payload)
+  // TODO: call endpoint with real form data
+
+  if (res?.success) {
+    router.push(`/complete/${res.transactionId}`)
+  }
+
+}
 </script>
 
 <template>
@@ -100,6 +134,7 @@ const form = reactive({
     <!-- BUTTON -->
     <button
       class="w-full bg-checkout-accent text-black py-2 rounded mt-2"
+      @click="submit"
     >
       Pay by Card
     </button>
