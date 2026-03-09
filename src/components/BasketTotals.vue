@@ -17,8 +17,22 @@ defineProps<{ basket: Basket }>()
       <span>${{ basket.salesTax.toFixed(2) }}</span>
     </div>
 
+    <!-- DISCOUNT -->
+    <div v-if="basket.couponCode" class="flex justify-between items-start">
+      <div class="flex flex-col">
+        <span>Discounts:</span>
+        <span
+          class="bg-neutral-600 text-white text-sm px-3 py-1 rounded-full mt-1 w-fit"
+        >
+          {{ basket.couponCode }}
+        </span>
+      </div>
+      <span class="text-right self-end">
+        - ${{ (basket.subTotal + basket.salesTax - basket.total).toFixed(2) }}
+      </span>
+    </div>
 
-    <div class="flex justify-between font-bold text-xl">
+    <div class="flex justify-between font-bold text-xl mt-5">
       <span>Total price:</span>
       <span>${{ basket.total.toFixed(2) }}</span>
     </div>

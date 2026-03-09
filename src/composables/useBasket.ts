@@ -135,6 +135,15 @@ export const useBasket = () => {
         throw new Error(data.message || "Invalid coupon")
       }
 
+      if (!res.ok) {
+        // invalid coupon
+        if (res.status === 400) {
+          throw new Error(data.message)
+        }
+        // any other error
+        throw new Error("Coupon not applied - server error")
+     }
+
       basket.value = data
 
     } finally {

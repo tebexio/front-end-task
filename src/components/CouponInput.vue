@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { useBasket } from "../composables/useBasket"
+import { toast } from "vue-sonner"
 
 const code = ref("")
-const applying = ref(false)
 const error = ref("")
 
 const { applyCoupon, applyingCoupon } = useBasket()
@@ -16,8 +16,13 @@ const submit = async () => {
 
   try {
     await applyCoupon(code.value)
-  } catch {
-    error.value = "Invalid coupon code"
+    toast.success("Coupon applied")
+  } catch (err: any) {
+      if (err.message === "Coupon code not found") {
+        error.value = "Invalid coupon code"
+      } else {
+        toast.error("Something went wrong. Coupon not applied.")
+      }
   }
 
 }

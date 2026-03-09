@@ -4,6 +4,7 @@ import router from "../router"
 import { useBasket } from "../composables/useBasket"
 import { z } from "zod"
 import type { CheckoutPayload } from "../types/payment"
+import { toast } from "vue-sonner"
 
 const { checkout, processingCheckout  } = useBasket()
 
@@ -79,11 +80,22 @@ const submit = async () => {
     cardNumber: form.cardNumber.replace(/\s/g, "")
   }
 
-  const res = await checkout(payload)
-
-  if (res?.success) {
-    router.push(`/complete/${res.transactionId}`)
+  try {
+    const res = await checkout(payload)
+    if (res?.success) {
+      router.push(`/complete/${res.transactionId}`)
+    } else {
+      toast.error("Checkout failed. Please try again.")
+    }
+  } catch {
+    toast.error("Checkout failed. Please try again.")
   }
+
+  // const res = await checkout(payload)
+
+  // if (res?.success) {
+  //   router.push(`/complete/${res.transactionId}`)
+  // }
 }
 
 // const submit = async () => {
