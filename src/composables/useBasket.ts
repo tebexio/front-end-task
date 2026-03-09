@@ -1,20 +1,5 @@
 import { ref } from "vue"
-
-interface Product {
-  name: string
-  price: number
-  image: string
-  quantity: number
-}
-
-interface Basket {
-  id: string
-  products: Product[]
-  couponCode: string | null
-  subTotal: number
-  salesTax: number
-  total: number
-}
+import type { Basket } from "../types/basket"
 
 const basket = ref<Basket | null>(null)
 const loading = ref(false)
