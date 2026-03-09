@@ -46,7 +46,7 @@ const submit = async () => {
       <button
         @click="submit"
         :disabled="applyingCoupon || !code"
-        class="bg-white px-2 py-2 rounded cursor-pointer text-black text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+        class="bg-white px-2 py-2 rounded cursor-pointer text-black text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition"
       >
         {{ applyingCoupon ? "Applying..." : "Confirm" }}
       </button>

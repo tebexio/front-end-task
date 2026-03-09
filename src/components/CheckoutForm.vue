@@ -45,33 +45,26 @@ const validateField = (field: keyof typeof form) => {
   const result = schema.safeParse(form)
 
   if (!result.success) {
-
     const issue = result.error.issues.find(
       i => i.path[0] === field
     )
-
     if (issue) {
       errors[field] = issue.message
       return
     }
   }
-
   delete errors[field]
 }
 
 const submit = async () => {
-
   Object.keys(errors).forEach(key => delete errors[key])
-
   const result = schema.safeParse(form)
 
   if (!result.success) {
-
     result.error.issues.forEach(issue => {
       const field = issue.path[0] as string
       errors[field] = issue.message
     })
-
     return
   }
 
@@ -90,67 +83,23 @@ const submit = async () => {
   } catch {
     toast.error("Checkout failed. Please try again.")
   }
-
-  // const res = await checkout(payload)
-
-  // if (res?.success) {
-  //   router.push(`/complete/${res.transactionId}`)
-  // }
 }
-
-// const submit = async () => {
-
-//   const mockedPayload = {
-//     cardCvc: "123",
-//     cardExpiry: "01/24",
-//     cardNumber: "1111222233334444",    
-//     email: "john.doe@example.com",
-//     nameOnCard: "John Doe",
-//     postalCode: "SW1W 0NY"
-//   };
-
-//   // const payload = {
-//   //   cardCvc: form.cardCvc,
-//   //   cardExpiry: form.cardExpiry,
-//   //   cardNumber: form.cardNumber,
-//   //   email: form.email,
-//   //   nameOnCard: form.nameOnCard,
-//   //   postalCode: form.postalCode
-//   // };
-
-//   const res = await checkout(mockedPayload)
-//   // const res = await checkout(payload)
-//   // TODO: call endpoint with real form data
-
-//   if (res?.success) {
-//     router.push(`/complete/${res.transactionId}`)
-//   }
-
-// }
 
 const formatCardNumber = (e: Event) => {
   const input = e.target as HTMLInputElement
-
   let value = input.value.replace(/\D/g, "") // remove non digits
-
   value = value.slice(0, 16) // max 16 digits
-
   const formatted = value.match(/.{1,4}/g)?.join(" ") || ""
-
   form.cardNumber = formatted
 }
 
 const formatExpiry = (e: Event) => {
   const input = e.target as HTMLInputElement
-
   let value = input.value.replace(/\D/g, "")
-
   if (value.length > 4) value = value.slice(0, 4)
-
   if (value.length >= 3) {
     value = value.slice(0, 2) + "/" + value.slice(2)
   }
-
   form.cardExpiry = value
 }
 
@@ -291,7 +240,7 @@ const formatCvc = (e: Event) => {
       <!-- BUTTON -->
       <button
         :disabled="!isValid || processingCheckout"
-        class="w-full bg-checkout-accent text-black py-2 rounded mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full bg-checkout-accent text-black py-2 rounded mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition"
         type="submit"
       >
         {{ processingCheckout ? "Processing payment..." : "Pay by Card" }}
