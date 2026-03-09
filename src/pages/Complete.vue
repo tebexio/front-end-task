@@ -5,6 +5,9 @@ const route = useRoute()
 const transaction = route.params.transaction
 </script>
 
+<!-- TODO test responsiveness and the remove commented out lines -->
+
+
 <template>
   <div class="bg-black min-h-screen flex flex-col items-center text-white mt-14 gap-2">
 
@@ -12,7 +15,7 @@ const transaction = route.params.transaction
       <img src="/img/logo.svg" class="h-10 mb-8"/>
     </div>
 
-    <div class="border border-checkout-dark-gray pt-6 pb-5.5 px-44 text-center w-[40%]">
+    <div class="border border-checkout-dark-gray pt-6 pb-5.5 px-6 lg:px-44 text-center w-[80%] lg:w-[45%]">
 
       <img
         src="/img/check.svg"
@@ -27,7 +30,7 @@ const transaction = route.params.transaction
         Thank you for your payment. You will receive your purchased products shortly.
       </p>
 
-      <div class="bg-checkout-black border border-checkout-dark-gray py-2 px-4 text-lg">
+      <div class="bg-checkout-black border border-checkout-dark-gray py-2 px-4 text-lg break-all">
         <span class="font-bold">Order Number: </span>
         <span> {{ transaction }} </span> 
       </div>

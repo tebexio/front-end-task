@@ -113,8 +113,10 @@ const formatCvc = (e: Event) => {
 }
 </script>
 
+<!-- TODO test responsiveness and the remove commented out lines -->
+
 <template>
-  <div class="w-full mt-22 space-y-4">
+  <div class="w-full lg:mt-22 space-y-4">
 
     <div class="text-xs flex gap-2 mb-4">
       <span class="font-bold text-checkout-accent">Make Payment</span>
@@ -201,8 +203,12 @@ const formatCvc = (e: Event) => {
           </div>
 
           <div class="flex flex-col space-y-1">
-            <label class="text-xs font-bold">
+            <!-- <label class="text-xs font-bold">
               Zip Code / Postal code*
+            </label> -->
+            <label class="text-xs font-bold">
+              <span class="lg:hidden">Postal code*</span>
+              <span class="hidden lg:inline">Zip Code / Postal code*</span>
             </label>
             <input
               v-model="form.postalCode"

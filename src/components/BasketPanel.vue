@@ -14,7 +14,7 @@ const { basket } = useBasket()
       <img src="/img/logo.svg" class="h-12 mb-10"/>
     </div>
 
-    <div class="flex flex-col gap-40">
+    <div class="flex flex-col gap-10 lg:gap-34">
       <BasketSummary :products="basket.products" />
 
       <div>
