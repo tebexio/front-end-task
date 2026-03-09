@@ -1,57 +1,187 @@
 import { ref } from "vue"
 import type { Basket } from "../types/basket"
+import type { CheckoutPayload } from "../types/payment"
 
 const basket = ref<Basket | null>(null)
-const loading = ref(false)
+
+const loadingBasket = ref(false)
+const applyingCoupon = ref(false)
+const processingCheckout = ref(false)
+
+
+// TODO CLEAN HERE
+
+// export const useBasket = () => {
+  
+//   const fetchBasket = async () => {
+//     loadingBasket.value = true
+
+//     const res = await fetch("/api/basket")
+//     basket.value = await res.json()
+
+//     loadingBasket.value = false
+//   }
+
+//   const applyCoupon = async (code: string) => {
+//     if (!basket.value) return
+
+//     applyingCoupon.value = true
+
+//     const res = await fetch(`/api/basket/${basket.value.id}/coupon`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify({ code })
+//     })
+
+//     const data = await res.json()
+
+//     applyingCoupon.value = false
+
+//     if (!res.ok) {
+//       throw new Error(data.message || "Invalid coupon")
+//     }
+
+//     basket.value = data
+//   }
+
+//   const checkout = async (payload: any) => {
+//     if (!basket.value) return
+
+//     processingCheckout.value = true
+
+//     const res = await fetch(`/api/basket/${basket.value.id}/checkout`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(payload)
+//     })
+
+//     const data = await res.json()
+
+//     processingCheckout.value = false
+
+//     if (!res.ok) {
+//       throw new Error("Checkout failed")
+//     }
+
+//     return data
+//   }
+
+//   return {
+//     basket,
+
+//     loadingBasket,
+//     applyingCoupon,
+//     processingCheckout,
+
+//     fetchBasket,
+//     applyCoupon,
+//     checkout
+//   }
+// }
+
+
+
+
+
 
 export const useBasket = () => {
 
   const fetchBasket = async () => {
-    loading.value = true
 
-    const res = await fetch("/api/basket")
-    basket.value = await res.json()
+    loadingBasket.value = true
 
-    loading.value = false
-  }
+    try {
 
-  const applyCoupon = async (code: string) => {
-    if (!basket.value) return
+      const res = await fetch("/api/basket")
 
-    const res = await fetch(`/api/basket/${basket.value.id}/coupon`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ code })
-    })
+      const data = await res.json()
 
-    const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to load basket")
+      }
 
-    if (!res.ok) {
-      throw new Error(data.message || "Invalid coupon")
+      basket.value = data
+
+    } finally {
+      loadingBasket.value = false
     }
 
-    basket.value = data
   }
 
-  const checkout = async (payload: any) => {
+
+  const applyCoupon = async (code: string) => {
+
     if (!basket.value) return
 
-    const res = await fetch(`/api/basket/${basket.value.id}/checkout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    })
+    applyingCoupon.value = true
 
-    return await res.json()
+    try {
+
+      const res = await fetch(`/api/basket/${basket.value.id}/coupon`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ code })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.message || "Invalid coupon")
+      }
+
+      basket.value = data
+
+    } finally {
+      applyingCoupon.value = false
+    }
+
   }
+
+
+  const checkout = async (payload: CheckoutPayload) => {
+
+    if (!basket.value) return
+
+    processingCheckout.value = true
+
+    try {
+
+      const res = await fetch(`/api/basket/${basket.value.id}/checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.message || "Checkout failed")
+      }
+
+      return data
+
+    } finally {
+      processingCheckout.value = false
+    }
+
+  }
+
 
   return {
     basket,
-    loading,
+
+    loadingBasket,
+    applyingCoupon,
+    processingCheckout,
+
     fetchBasket,
     applyCoupon,
     checkout

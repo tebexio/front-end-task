@@ -6,21 +6,20 @@ const code = ref("")
 const applying = ref(false)
 const error = ref("")
 
-const { applyCoupon } = useBasket()
+const { applyCoupon, applyingCoupon } = useBasket()
 
 const submit = async () => {
+
   if (!code.value) return
 
-  applying.value = true
   error.value = ""
 
   try {
     await applyCoupon(code.value)
   } catch {
     error.value = "Invalid coupon code"
-  } finally {
-    applying.value = false
   }
+
 }
 </script>
 
@@ -41,10 +40,10 @@ const submit = async () => {
 
       <button
         @click="submit"
-        :disabled="applying"
-        class="bg-white px-2 py-2 rounded text-black text-xs disabled:opacity-50"
+        :disabled="applyingCoupon || !code"
+        class="bg-white px-2 py-2 rounded cursor-pointer text-black text-xs disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {{ applying ? "Applying..." : "Confirm" }}
+        {{ applyingCoupon ? "Applying..." : "Confirm" }}
       </button>
 
     </div>

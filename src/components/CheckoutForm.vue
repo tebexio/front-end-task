@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { reactive } from "vue"
+import { reactive, computed } from "vue"
 import router from "../router"
 import { useBasket } from "../composables/useBasket"
+import { z } from "zod"
+import type { CheckoutPayload } from "../types/payment"
 
-const { checkout } = useBasket()
+const { checkout, processingCheckout  } = useBasket()
 
-const form = reactive({
+const form = reactive<CheckoutPayload>({
   email: "",
   cardNumber: "",
   cardExpiry: "",
@@ -14,35 +16,105 @@ const form = reactive({
   nameOnCard: ""
 })
 
+const errors = reactive<Record<string, string>>({})
+
+const schema = z.object({
+  email: z.string().email("Enter a valid email"),
+  cardNumber: z
+    .string()
+    .regex(/^\d{4} \d{4} \d{4} \d{4}$/, "Card number must contain 16 digits"),
+  cardExpiry: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiry must be MM/YY"),
+  cardCvc: z
+    .string()
+    .min(3, "CVC must be 3 digits"),
+  postalCode: z
+    .string()
+    .min(3, "Postal code required"),
+  nameOnCard: z
+  .string()
+  .regex(/^[a-zA-Z\s]+$/, "Name must contain only letters")
+  .min(2, "Name required")
+})
+
+const isValid = computed(() => schema.safeParse(form).success)
+
+const validateField = (field: keyof typeof form) => {
+  const result = schema.safeParse(form)
+
+  if (!result.success) {
+
+    const issue = result.error.issues.find(
+      i => i.path[0] === field
+    )
+
+    if (issue) {
+      errors[field] = issue.message
+      return
+    }
+  }
+
+  delete errors[field]
+}
+
 const submit = async () => {
 
-  const mockedPayload = {
-    cardCvc: "123",
-    cardExpiry: "01/24",
-    cardNumber: "1111222233334444",    
-    email: "john.doe@example.com",
-    nameOnCard: "John Doe",
-    postalCode: "SW1W 0NY"
-  };
+  Object.keys(errors).forEach(key => delete errors[key])
 
-  // const payload = {
-  //   cardCvc: form.cardCvc,
-  //   cardExpiry: form.cardExpiry,
-  //   cardNumber: form.cardNumber,
-  //   email: form.email,
-  //   nameOnCard: form.nameOnCard,
-  //   postalCode: form.postalCode
-  // };
+  const result = schema.safeParse(form)
 
-  const res = await checkout(mockedPayload)
-  // const res = await checkout(payload)
-  // TODO: call endpoint with real form data
+  if (!result.success) {
+
+    result.error.issues.forEach(issue => {
+      const field = issue.path[0] as string
+      errors[field] = issue.message
+    })
+
+    return
+  }
+
+  const payload = {
+    ...form,
+    cardNumber: form.cardNumber.replace(/\s/g, "")
+  }
+
+  const res = await checkout(payload)
 
   if (res?.success) {
     router.push(`/complete/${res.transactionId}`)
   }
-
 }
+
+// const submit = async () => {
+
+//   const mockedPayload = {
+//     cardCvc: "123",
+//     cardExpiry: "01/24",
+//     cardNumber: "1111222233334444",    
+//     email: "john.doe@example.com",
+//     nameOnCard: "John Doe",
+//     postalCode: "SW1W 0NY"
+//   };
+
+//   // const payload = {
+//   //   cardCvc: form.cardCvc,
+//   //   cardExpiry: form.cardExpiry,
+//   //   cardNumber: form.cardNumber,
+//   //   email: form.email,
+//   //   nameOnCard: form.nameOnCard,
+//   //   postalCode: form.postalCode
+//   // };
+
+//   const res = await checkout(mockedPayload)
+//   // const res = await checkout(payload)
+//   // TODO: call endpoint with real form data
+
+//   if (res?.success) {
+//     router.push(`/complete/${res.transactionId}`)
+//   }
+
+// }
 
 const formatCardNumber = (e: Event) => {
   const input = e.target as HTMLInputElement
@@ -91,95 +163,126 @@ const formatCvc = (e: Event) => {
 
     <form @submit.prevent="submit" class="space-y-4">
 
-      <!-- EMAIL -->
-      <div>
-        <label class="text-xs font-bold">
-          Email*
-        </label>
+      <fieldset :disabled="processingCheckout" class="space-y-4">
 
-        <input
-          v-model="form.email"
-          class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
-          placeholder="Enter your email address"
-        />
-      </div>
-
-      <!-- CARD -->
-      <div>
-        <label class="text-xs font-bold">
-          Card number*
-        </label>
-
-        <input
-          @input="formatCardNumber"
-          v-model="form.cardNumber"
-          class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
-          placeholder="1234 5678 9101 1121"
-          inputmode="numeric"
-        />
-      </div>
-
-      <!-- ROW -->    
-      <div class="grid grid-cols-3 gap-3">
-
-        <div class="flex flex-col space-y-1">
+        <!-- EMAIL -->
+        <div>
           <label class="text-xs font-bold">
-            Expiry date*
+            Email*
           </label>
+
           <input
-            @input="formatExpiry"
-            v-model="form.cardExpiry"
-            class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
-            placeholder="MM/YY"
+            v-model="form.email"
+            @blur="validateField('email')"
+            class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
+            placeholder="Enter your email address"
+          />
+
+          <p v-if="errors.email" class="text-red-400 text-xs mt-1">
+            {{ errors.email }}
+          </p>
+        </div>
+
+        <!-- CARD -->
+        <div>
+          <label class="text-xs font-bold">
+            Card number*
+          </label>
+
+          <input
+            @input="formatCardNumber"
+            v-model="form.cardNumber"
+            @blur="validateField('cardNumber')"
+            class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
+            placeholder="1234 5678 9101 1121"
             inputmode="numeric"
           />
+          <p v-if="errors.cardNumber" class="text-red-400 text-xs mt-1">
+            {{ errors.cardNumber }}
+          </p>
         </div>
 
-        <div class="flex flex-col space-y-1">
+        <!-- ROW -->    
+        <div class="grid grid-cols-3 gap-3">
+
+          <div class="flex flex-col space-y-1">
+            <label class="text-xs font-bold">
+              Expiry date*
+            </label>
+            <input
+              @input="formatExpiry"
+              v-model="form.cardExpiry"
+              @blur="validateField('cardExpiry')"
+              class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
+              placeholder="MM/YY"
+              inputmode="numeric"
+            />
+            <p v-if="errors.cardExpiry" class="text-red-400 text-xs mt-1">
+              {{ errors.cardExpiry }}
+            </p>
+          </div>
+
+          <div class="flex flex-col space-y-1">
+            <label class="text-xs font-bold">
+              CVC/CVV*
+            </label>
+            <input
+              @input="formatCvc"
+              v-model="form.cardCvc"
+              @blur="validateField('cardCvc')"
+              class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
+              placeholder="123"
+              inputmode="numeric"
+            />
+            <p v-if="errors.cardCvc" class="text-red-400 text-xs mt-1">
+              {{ errors.cardCvc }}
+            </p>
+          </div>
+
+          <div class="flex flex-col space-y-1">
+            <label class="text-xs font-bold">
+              Zip Code / Postal code*
+            </label>
+            <input
+              v-model="form.postalCode"
+              @blur="validateField('postalCode')"
+              class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
+              placeholder="PO12 1AB"
+            />
+            <p v-if="errors.postalCode" class="text-red-400 text-xs mt-1">
+              {{ errors.postalCode }}
+            </p>
+          </div>
+
+        </div>
+
+        <!-- NAME -->
+        <div>
           <label class="text-xs font-bold">
-            CVC/CVV*
+            Name on card*
           </label>
+
           <input
-            @input="formatCvc"
-            v-model="form.cardCvc"
-            class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
-            placeholder="123"
-            inputmode="numeric"
+            v-model="form.nameOnCard"
+            @blur="validateField('nameOnCard')"
+            class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
+            placeholder="Enter your name as shown"
           />
+          <p v-if="errors.nameOnCard" class="text-red-400 text-xs mt-1">
+              {{ errors.nameOnCard }}
+            </p>
         </div>
 
-        <div class="flex flex-col space-y-1">
-          <label class="text-xs font-bold">
-            Zip Code / Postal code*
-          </label>
-          <input
-            v-model="form.postalCode"
-            class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
-            placeholder="PO12 1AB"
-          />
-        </div>
+      </fieldset>
 
-      </div>
-
-      <!-- NAME -->
-      <div>
-        <label class="text-xs font-bold">
-          Name on card*
-        </label>
-
-        <input
-          v-model="form.nameOnCard"
-          class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
-          placeholder="Enter your name as shown"
-        />
-      </div>
 
       <!-- BUTTON -->
       <button
-        class="w-full bg-checkout-accent text-black py-2 rounded mt-2"
+        :disabled="!isValid || processingCheckout"
+        class="w-full bg-checkout-accent text-black py-2 rounded mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         type="submit"
       >
-        Pay by Card
+        {{ processingCheckout ? "Processing payment..." : "Pay by Card" }}
       </button>
 
     </form>
