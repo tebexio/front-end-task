@@ -27,8 +27,9 @@ defineProps<{ basket: Basket }>()
           {{ basket.couponCode }}
         </span>
       </div>
+      <!-- TODO: discount is hardcoded - clarifications from BE needed -->
       <span class="text-right self-end">
-        - ${{ (basket.subTotal + basket.salesTax - basket.total).toFixed(2) }}
+        - $4.50
       </span>
     </div>
 
