@@ -27,7 +27,7 @@ defineProps<{ basket: Basket }>()
           {{ basket.couponCode }}
         </span>
       </div>
-      <!-- TODO: discount is hardcoded - clarifications from BE needed -->
+      <!-- TODO: discount value is hardcoded - clarifications from BE needed -->
       <span class="text-right self-end">
         - $4.50
       </span>

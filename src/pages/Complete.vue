@@ -5,8 +5,6 @@ const route = useRoute()
 const transaction = route.params.transaction
 </script>
 
-<!-- TODO test responsiveness and the remove commented out lines -->
-
 
 <template>
   <div class="bg-black min-h-screen flex flex-col items-center text-white mt-14 gap-2">

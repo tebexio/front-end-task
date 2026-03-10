@@ -28,6 +28,7 @@ const retryCheckout = () => {
 }
 </script>
 
+
 <template>
 
   <!-- LOADING UI -->
@@ -58,14 +59,11 @@ const retryCheckout = () => {
 
   </div>
 
-
-  <!-- TODO TEST RESPONSIVENESS AND REMOVE COMMENTED OUT CODE     -->
   <!-- NORMAL CHECKOUT -->
   <div v-else class="grid grid-cols-1 lg:grid-cols-2 min-h-screen border-t-2 border-checkout-accent">
 
     <!-- LEFT PANEL -->
     <div class="bg-checkout-black text-white flex justify-center">
-      <!-- <div class="w-full ps-40 pe-30 py-8"> -->
       <div class="w-full max-w-md mx-auto px-8 py-10 lg:max-w-none lg:ps-40 lg:pe-24">
         <BasketPanel />
       </div>
@@ -73,7 +71,6 @@ const retryCheckout = () => {
 
     <!-- RIGHT PANEL -->
     <div class="bg-black text-white flex justify-center">
-      <!-- <div class="w-full ps-30 pe-40 py-8"> -->
       <div class="w-full max-w-md mx-auto px-8 py-14 lg:py-8 lg:max-w-none lg:ps-30 lg:pe-40">
         <CheckoutForm />
       </div>

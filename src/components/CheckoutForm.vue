@@ -113,7 +113,6 @@ const formatCvc = (e: Event) => {
 }
 </script>
 
-<!-- TODO test responsiveness and the remove commented out lines -->
 
 <template>
   <div class="w-full lg:mt-22 space-y-4">
@@ -202,10 +201,7 @@ const formatCvc = (e: Event) => {
             </p>
           </div>
 
-          <div class="flex flex-col space-y-1">
-            <!-- <label class="text-xs font-bold">
-              Zip Code / Postal code*
-            </label> -->
+          <div class="flex flex-col space-y-1">            
             <label class="text-xs font-bold">
               <span class="lg:hidden">Postal code*</span>
               <span class="hidden lg:inline">Zip Code / Postal code*</span>
@@ -253,7 +249,6 @@ const formatCvc = (e: Event) => {
       </button>
 
     </form>
-
 
   </div>
 </template>
