@@ -20,6 +20,9 @@ export const useBasket = () => {
 
       const data = await res.json()
 
+      // TEMP: multiply products for UI testing
+      // data.products = Array.from({ length: 5 }, () => [...data.products]).flat()
+
       if (!res.ok) {
         throw new Error(data.message || "Failed to load basket")
       }

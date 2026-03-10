@@ -8,13 +8,13 @@ defineProps<{
 </script>
 
 <template>
-  <div>
+  <div class="lg:h-[40vh] flex flex-col">
 
     <p class="text-xs mb-4">
       Your order
     </p>
 
-    <div class="space-y-4 mb-8">
+    <div class="space-y-4 mb-8 overflow-y-auto flex-1 lg:pr-6">
 
       <BasketProduct
         v-for="product in products"

@@ -14,10 +14,11 @@ const { basket } = useBasket()
       <img src="/img/logo.svg" class="h-12 mb-10"/>
     </div>
 
-    <div class="flex flex-col gap-10 lg:gap-34">
+    <!-- <div class="flex flex-col gap-10 lg:gap-34"> -->
+    <div class="flex flex-col">
       <BasketSummary :products="basket.products" />
 
-      <div>
+      <div class="lg:pr-6">
         <CouponInput />
         <BasketTotals :basket="basket" />
       </div>
