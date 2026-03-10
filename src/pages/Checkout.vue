@@ -6,7 +6,7 @@ import CheckoutForm from "../components/CheckoutForm.vue"
 import { toast } from "vue-sonner"
 import { useRouter } from "vue-router"
 
-const { fetchBasket } = useBasket()
+const { fetchBasket, loadingBasket } = useBasket()
 
 const router = useRouter()
 
@@ -30,9 +30,14 @@ const retryCheckout = () => {
 
 <template>
 
+  <!-- LOADING UI -->
+  <div v-if="loadingBasket" class="min-h-screen flex items-center justify-center bg-black text-white">
+    Loading checkout...
+  </div>  
+
   <!-- ERROR STATE -->
   <div
-    v-if="loadError"
+    v-else-if="loadError"
     class="bg-black min-h-screen text-white flex flex-col items-center justify-center gap-4"
   >
 
@@ -56,7 +61,7 @@ const retryCheckout = () => {
 
   <!-- TODO TEST RESPONSIVENESS AND REMOVE COMMENTED OUT CODE     -->
   <!-- NORMAL CHECKOUT -->
-  <div v-if="!loadError" class="grid grid-cols-1 lg:grid-cols-2 min-h-screen border-t-2 border-checkout-accent">
+  <div v-else class="grid grid-cols-1 lg:grid-cols-2 min-h-screen border-t-2 border-checkout-accent">
 
     <!-- LEFT PANEL -->
     <div class="bg-checkout-black text-white flex justify-center">

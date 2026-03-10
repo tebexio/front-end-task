@@ -4,7 +4,7 @@ import type { CheckoutPayload } from "../types/payment"
 
 const basket = ref<Basket | null>(null)
 
-const loadingBasket = ref(false)
+const loadingBasket = ref(true)
 const applyingCoupon = ref(false)
 const processingCheckout = ref(false)
 
