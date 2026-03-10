@@ -129,11 +129,14 @@ const formatCvc = (e: Event) => {
 
         <!-- EMAIL -->
         <div>
-          <label class="text-xs font-bold">
+          <label for="email" class="text-xs font-bold">
             Email*
           </label>
 
           <input
+            id="email"
+            name="email"
+            autocomplete="email"
             v-model="form.email"
             @blur="validateField('email')"
             class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
@@ -147,11 +150,13 @@ const formatCvc = (e: Event) => {
 
         <!-- CARD -->
         <div>
-          <label class="text-xs font-bold">
+          <label for="cardNumber" class="text-xs font-bold">
             Card number*
           </label>
 
           <input
+            id="cardNumber"
+            name="cardNumber"
             @input="formatCardNumber"
             v-model="form.cardNumber"
             @blur="validateField('cardNumber')"
@@ -168,10 +173,12 @@ const formatCvc = (e: Event) => {
         <div class="grid grid-cols-3 gap-3">
 
           <div class="flex flex-col space-y-1">
-            <label class="text-xs font-bold">
+            <label for="cardExpiry" class="text-xs font-bold">
               Expiry date*
             </label>
             <input
+              id="cardExpiry"
+              name="cardExpiry"
               @input="formatExpiry"
               v-model="form.cardExpiry"
               @blur="validateField('cardExpiry')"
@@ -185,10 +192,12 @@ const formatCvc = (e: Event) => {
           </div>
 
           <div class="flex flex-col space-y-1">
-            <label class="text-xs font-bold">
+            <label for="cardCvc" class="text-xs font-bold">
               CVC/CVV*
             </label>
             <input
+              id="cardCvc"
+              name="cardCvc"
               @input="formatCvc"
               v-model="form.cardCvc"
               @blur="validateField('cardCvc')"
@@ -202,11 +211,13 @@ const formatCvc = (e: Event) => {
           </div>
 
           <div class="flex flex-col space-y-1">            
-            <label class="text-xs font-bold">
+            <label for="postalCode" class="text-xs font-bold">
               <span class="lg:hidden">Postal code*</span>
               <span class="hidden lg:inline">Zip Code / Postal code*</span>
             </label>
             <input
+              id="postalCode"
+              name="postalCode"
               v-model="form.postalCode"
               @blur="validateField('postalCode')"
               class="bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"
@@ -221,11 +232,13 @@ const formatCvc = (e: Event) => {
 
         <!-- NAME -->
         <div>
-          <label class="text-xs font-bold">
+          <label for="nameOnCard" class="text-xs font-bold">
             Name on card*
           </label>
 
           <input
+            id="nameOnCard"
+            name="nameOnCard"
             v-model="form.nameOnCard"
             @blur="validateField('nameOnCard')"
             class="w-full bg-checkout-input-bg px-3 py-3 rounded text-xs mt-1 placeholder:text-checkout-input-placeholder"

@@ -38,6 +38,8 @@ const submit = async () => {
     <div class="flex gap-2.5">
 
       <input
+        id="coupon"
+        name="coupon"
         v-model="code"
         class="flex-1 bg-checkout-input-bg px-3 py-3 rounded text-xs placeholder:text-checkout-input-placeholder"
         placeholder="Enter code here"
