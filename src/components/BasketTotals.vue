@@ -22,9 +22,9 @@ defineProps<{ basket: Basket }>()
       <div class="flex flex-col">
         <span>Discounts:</span>
         <span
-          class="bg-neutral-600 text-white text-sm px-3 py-1 rounded-full mt-1 w-fit"
+          class="bg-neutral-600 text-white text-xs px-3 py-1 rounded-full mt-1 w-fit"
         >
-          {{ basket.couponCode }}
+          {{ basket.couponCode.toUpperCase() }}
         </span>
       </div>
       <!-- TODO: discount value is hardcoded - clarifications from BE needed -->
