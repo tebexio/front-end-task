@@ -6,7 +6,7 @@ Emberforge is a Minecraft server store selling ranks, crates, and keys. Your job
 
 Your task is to build the basket widget in Vue 3, matching the Figma design:
 
-**Figma:** https://www.figma.com/design/YWTGK5c8RvoriPAkbiLDiA
+**Figma:** [https://www.figma.com/design/YWTGK5c8RvoriPAkbiLDiA](https://www.figma.com/design/9QdkrhcEssTaSxeRnahbfy/Tebex-Technical-Assignment)
 
 - Focus on a polish well-tested application. If you miss anything or run out of time add a "With more time" section in a NOTES.md file.
 - Target a the figma design sizing (1440px), if you manage to add some responsive styling that is a bonus.
